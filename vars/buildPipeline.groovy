@@ -145,6 +145,7 @@ spec:
                                 serviceCategory = buildConfig.getServiceCategoryName();  // Dashboard
                                 buildNum = "${scmVars.VERSION}"; // Dashboard
                                 String noPushImage = env.NO_PUSH ? env.NO_PUSH : false;
+                                String reactAppPublicPathArg = env.REACT_APP_PUBLIC_PATH ? "--build-arg REACT_APP_PUBLIC_PATH=${env.REACT_APP_PUBLIC_PATH}" : ""
                                 echo "ALT_REPO_PUSH ENABLED: ${ALT_REPO_PUSH}"
                                  if(env.ALT_REPO_PUSH.equalsIgnoreCase("true")){
                                   String gcr_image = "${GCR_REPO_NAME}/${buildConfig.getImageName()}:${env.BUILD_NUMBER}-${scmVars.BRANCH}-${scmVars.VERSION}-${scmVars.ACTUAL_COMMIT}";
@@ -153,6 +154,7 @@ spec:
                                     /kaniko/executor -f `pwd`/${buildConfig.getDockerFile()} -c `pwd`/${buildConfig.getContext()} \
                                     --build-arg WORK_DIR=${workDir} \
                                     --build-arg token=\$GIT_ACCESS_TOKEN \
+                                    ${reactAppPublicPathArg} \
                                     --build-arg nexusUsername=\$NEXUS_USERNAME \
                                     --build-arg nexusPassword=\$NEXUS_PASSWORD \
                                     --build-arg ciDbUsername=\$CI_DB_USER \
@@ -173,6 +175,7 @@ spec:
                                     /kaniko/executor -f `pwd`/${buildConfig.getDockerFile()} -c `pwd`/${buildConfig.getContext()} \
                                     --build-arg WORK_DIR=${workDir} \
                                     --build-arg token=\$GIT_ACCESS_TOKEN \
+                                    ${reactAppPublicPathArg} \
                                     --build-arg nexusUsername=\$NEXUS_USERNAME \
                                     --build-arg nexusPassword=\$NEXUS_PASSWORD \
                                     --build-arg ciDbUsername=\$CI_DB_USER \

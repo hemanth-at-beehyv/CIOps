@@ -102,6 +102,7 @@ spec:
                         listSize('5')                 
                 }
                   booleanParam('ALT_REPO_PUSH', false, 'Check to push images to GCR')
+                  stringParam('REACT_APP_PUBLIC_PATH', '', 'Specify the public path for the React app')
             }
                 definition {
                     cpsScm {
