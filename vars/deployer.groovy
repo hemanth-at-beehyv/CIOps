@@ -28,8 +28,6 @@ spec:
       limits:
         memory: "256Mi"
         cpu: "200m"  
-  serviceAccount: jenkins
-  serviceAccountName: jenkins
   volumes:
   - name: service-account
     projected:
@@ -49,6 +47,7 @@ spec:
                 stage('Deploy Images') {
                         container(name: 'egov-deployer', shell: '/bin/sh') {
                             sh """
+                                aws sts get-caller-identity
                                 /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
                             """
                             }
