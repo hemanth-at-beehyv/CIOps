@@ -47,7 +47,7 @@ spec:
                 stage('Deploy Images') {
                         container(name: 'egov-deployer', shell: '/bin/sh') {
                             sh """
-                                apk add --update python3.12 curl unzip
+                                apk add --update python3 curl unzip
                                 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
                                 unzip awscli-bundle.zip
                                 ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
