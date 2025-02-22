@@ -48,6 +48,7 @@ spec:
                         container(name: 'egov-deployer', shell: '/bin/sh') {
                             sh """
                                 apk add --no-cache python3 py3-pip && pip3 install --no-cache-dir awscli
+                                sops --version
                                 aws sts get-caller-identity
                                 /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
                             """
