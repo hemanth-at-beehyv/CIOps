@@ -21,9 +21,6 @@ spec:
     securityContext:
       runAsUser: 1000
       allowPrivilegeEscalation: false
-    command:
-      - /kaniko
-      - --help
     tty: true
     env:
       - name: GIT_ACCESS_TOKEN
