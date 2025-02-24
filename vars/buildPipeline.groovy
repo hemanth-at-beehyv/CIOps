@@ -185,7 +185,8 @@ spec:
                                     --snapshotMode=time \
                                     --destination=${image} \
                                     --no-push=${noPushImage} \
-                                    --cache-repo=egovio/cache/cache
+                                    --cache-repo=egovio/cache/cache \
+                                    --force
                                 """
                                 echo "${image} pushed successfully!"
                                 }                                
