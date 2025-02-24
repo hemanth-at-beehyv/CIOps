@@ -22,9 +22,8 @@ spec:
       runAsUser: 1000
       allowPrivilegeEscalation: false
     command:
-    - /bin/sh
-    - -c
-    - echo "kaniko"
+      - /kaniko/executor
+      - --help
     tty: true
     env:
       - name: GIT_ACCESS_TOKEN
