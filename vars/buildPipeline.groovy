@@ -14,7 +14,7 @@ metadata:
 spec:
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-0.24.0
+    image: gcr.io/kaniko-project/executor:debug-v0.24.0
     imagePullPolicy: IfNotPresent
     command:
     - /busybox/cat
