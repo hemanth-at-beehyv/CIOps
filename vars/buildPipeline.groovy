@@ -22,6 +22,8 @@ spec:
       runAsUser: 1000
       allowPrivilegeEscalation: false
     command:
+    - /bin/sh
+    - -c
     - echo "kaniko"
     tty: true
     env:
