@@ -169,8 +169,8 @@ spec:
                                   """  
                                   echo "${image} and ${gcr_image} pushed successfully!!"                              
                                 }
-                                else{
-                                sh """
+                                 else{
+                                 sh """
                                     echo \"Attempting to build image,  ${image}\"
                                     /kaniko/executor -f `pwd`/${buildConfig.getDockerFile()} -c `pwd`/${buildConfig.getContext()} \
                                     --build-arg WORK_DIR=${workDir} \
@@ -186,8 +186,8 @@ spec:
                                     --destination=${image} \
                                     --no-push=${noPushImage} \
                                     --cache-repo=egovio/cache/cache
-                                """
-                                echo "${image} pushed successfully!"
+                                 """
+                                 echo "${image} pushed successfully!"
                                 }                                
                             }
                         }
