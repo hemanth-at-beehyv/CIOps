@@ -13,14 +13,14 @@ metadata:
   name: kaniko
 spec:
   securityContext:
-    fsGroup: 1000
+    fsGroup: 0
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug-v0.24.0
     imagePullPolicy: IfNotPresent
     securityContext:
-      runAsUser: 1000
-      allowPrivilegeEscalation: false
+      runAsUser: 0
+      privileged: true
     command:
     - /busybox/cat
     tty: true
