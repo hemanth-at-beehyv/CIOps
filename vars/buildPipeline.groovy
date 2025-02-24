@@ -12,10 +12,15 @@ kind: Pod
 metadata:
   name: kaniko
 spec:
+  securityContext:
+    fsGroup: 1000
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-v0.24.0
+    image: gcr.io/kaniko-project/executor:v1.19.0
     imagePullPolicy: IfNotPresent
+    securityContext:
+      runAsUser: 1000
+      allowPrivilegeEscalation: false
     command:
     - /busybox/cat
     tty: true
