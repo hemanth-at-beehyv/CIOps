@@ -22,7 +22,7 @@ spec:
       runAsUser: 1000
       allowPrivilegeEscalation: false
     command:
-      - /kaniko/executor
+      - /kaniko
       - --help
     tty: true
     env:
