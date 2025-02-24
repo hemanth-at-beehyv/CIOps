@@ -16,7 +16,7 @@ spec:
     fsGroup: 1000
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:v1.19.0
+    image: gcr.io/kaniko-project/executor:debug-v0.15.0
     imagePullPolicy: IfNotPresent
     securityContext:
       runAsUser: 1000
