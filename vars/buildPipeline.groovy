@@ -16,7 +16,7 @@ spec:
     fsGroup: 0
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-v0.24.0
+    image: gcr.io/kaniko-project/executor:debug-v1.0.0
     imagePullPolicy: IfNotPresent
     securityContext:
       runAsUser: 0
