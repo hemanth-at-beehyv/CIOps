@@ -113,26 +113,28 @@ spec:
             for(int i=0; i<jobConfigs.size(); i++){
                 JobConfig jobConfig = jobConfigs.get(i)
 
+                stage('Parse Latest Git Commit') {
+                    withEnv(["BUILD_PATH=${jobConfig.getBuildConfigs().get(0).getWorkDir()}",
+                             "PATH=alpine:$PATH"
+                    ]) {
+                        container(name: 'git', shell: '/bin/sh') {
+                            scmVars['VERSION'] = sh (script:
+                                    '/scripts/get_application_version.sh ${BUILD_PATH}',
+                                    returnStdout: true).trim()
+                            scmVars['ACTUAL_COMMIT'] = sh (script:
+                                    '/scripts/get_folder_commit.sh ${BUILD_PATH}',
+                                    returnStdout: true).trim()
+                            scmVars['BRANCH'] = scmVars['GIT_BRANCH'].replaceFirst("origin/", "")
+                        }
+                    }
+                }
+
                 stage('Build with Kaniko') {
                     withEnv(["PATH=/busybox:/kaniko:$PATH"
                     ]) {
                         container(name: 'kaniko', shell: '/busybox/sh') {
 
                             for(int j=0; j<jobConfig.getBuildConfigs().size(); j++){
-                                sh "rm -rf jobConfig.getBuildConfigs().get(0).getWorkDir()"
-                                withEnv(["BUILD_PATH=${jobConfig.getBuildConfigs().get(0).getWorkDir()}",
-                                "PATH=alpine:$PATH"
-                                ]) {
-                                    container(name: 'git', shell: '/bin/sh') {
-                                        scmVars['VERSION'] = sh (script:
-                                                '/scripts/get_application_version.sh ${BUILD_PATH}',
-                                                returnStdout: true).trim()
-                                        scmVars['ACTUAL_COMMIT'] = sh (script:
-                                                '/scripts/get_folder_commit.sh ${BUILD_PATH}',
-                                                returnStdout: true).trim()
-                                        scmVars['BRANCH'] = scmVars['GIT_BRANCH'].replaceFirst("origin/", "")
-                                    }
-                                }
                                 BuildConfig buildConfig = jobConfig.getBuildConfigs().get(j)
                                 echo "${buildConfig.getWorkDir()} ${buildConfig.getDockerFile()}"
                                 if( ! fileExists(buildConfig.getWorkDir()) || ! fileExists(buildConfig.getDockerFile()))
