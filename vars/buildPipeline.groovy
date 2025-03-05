@@ -166,7 +166,7 @@ spec:
                                     --build-arg ciDbpassword=\$CI_DB_PWD \
                                     --cache=true --cache-dir=/cache \
                                     --single-snapshot=true \
-                                    --snapshotMode=full \
+                                    --snapshotMode=time \
                                     --destination=${image} \
                                     --destination=${gcr_image} \
                                     --no-push=${noPushImage} \
@@ -187,7 +187,7 @@ spec:
                                     --build-arg ciDbpassword=\$CI_DB_PWD \
                                     --cache=true --cache-dir=/cache \
                                     --single-snapshot=true \
-                                    --snapshotMode=full \
+                                    --snapshotMode=time \
                                     --destination=${image} \
                                     --no-push=${noPushImage} \
                                     --cache-repo=egovio/cache/cache
