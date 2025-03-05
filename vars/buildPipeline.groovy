@@ -23,7 +23,6 @@ spec:
       privileged: true
     command:
     - /busybox/cat
-    - rm /usr/lib/libssl.so.3
     tty: true
     env:
       - name: GIT_ACCESS_TOKEN
