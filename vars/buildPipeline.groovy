@@ -135,7 +135,6 @@ spec:
                         container(name: 'kaniko', shell: '/busybox/sh') {
 
                             for(int j=0; j<jobConfig.getBuildConfigs().size(); j++){
-                                sh "rm /usr/lib/libssl.so.3"
                                 BuildConfig buildConfig = jobConfig.getBuildConfigs().get(j)
                                 echo "${buildConfig.getWorkDir()} ${buildConfig.getDockerFile()}"
                                 if( ! fileExists(buildConfig.getWorkDir()) || ! fileExists(buildConfig.getDockerFile()))
