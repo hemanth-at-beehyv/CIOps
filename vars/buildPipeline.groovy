@@ -14,6 +14,26 @@ metadata:
 spec:
   securityContext:
     fsGroup: 0
+  initContainers:
+  - name: install-openssl
+    image: ubuntu:20.04
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        echo "Installing OpenSSL 1.1.1..."
+        apt-get update && apt-get install -y wget build-essential
+        cd /usr/local/src
+        wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
+        tar -xvzf openssl-1.1.1w.tar.gz
+        cd openssl-1.1.1w
+        ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
+        make -j$(nproc) && make install
+        ln -sf /usr/local/ssl/lib/libssl.so.1.1 /usr/lib/libssl.so.1.1
+        ln -sf /usr/local/ssl/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so.1.1
+        echo "OpenSSL 1.1.1 installation completed!"
+    volumeMounts:
+      - name: openssl-cache
+        mountPath: /usr/local/ssl
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug-v1.0.0
