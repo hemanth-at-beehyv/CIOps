@@ -152,9 +152,6 @@ spec:
                                 String noPushImage = env.NO_PUSH ? env.NO_PUSH : false;
                                 String reactAppPublicPathArg = env.REACT_APP_PUBLIC_PATH ? "--build-arg REACT_APP_PUBLIC_PATH=${env.REACT_APP_PUBLIC_PATH}" : ""
                                 echo "ALT_REPO_PUSH ENABLED: ${ALT_REPO_PUSH}"
-                                sh """
-                                    openssl version -a  
-                                """
                                  if(env.ALT_REPO_PUSH.equalsIgnoreCase("true")){
                                   String gcr_image = "${GCR_REPO_NAME}/${buildConfig.getImageName()}:${env.BUILD_NUMBER}-${scmVars.BRANCH}-${scmVars.VERSION}-${scmVars.ACTUAL_COMMIT}";
                                   sh """
