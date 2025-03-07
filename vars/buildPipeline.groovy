@@ -78,6 +78,8 @@ spec:
             name: jenkins-credentials
             key: ciDbpassword                      
     volumeMounts:
+      - name: openssl-cache
+        mountPath: /usr/local/ssl
       - name: jenkins-docker-cfg
         mountPath: /root/.docker
       - name: kaniko-cache
@@ -98,6 +100,8 @@ spec:
     - cat
     tty: true        
   volumes:
+  - name: openssl-cache
+    emptyDir: {}
   - name: kaniko-cache
     persistentVolumeClaim:
       claimName: kaniko-cache-claim
