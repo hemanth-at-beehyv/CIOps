@@ -66,7 +66,7 @@ spec:
         mountPath: /var/run/secret/cloud.google.com        
     resources:
       requests:
-        memory: "1900Mi"
+        memory: "2200Mi"
         cpu: "750m"
       limits:
         memory: "4080Mi"
