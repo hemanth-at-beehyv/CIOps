@@ -9,7 +9,7 @@ metadata:
 spec:
   containers:
   - name: egov-deployer
-    image: egovio/egov-deployer:3-master-931c51ff
+    image: egovio/egov-deployer:gcloud-debian
     command:
     - cat
     tty: true
@@ -47,10 +47,6 @@ spec:
                 stage('Deploy Images') {
                         container(name: 'egov-deployer', shell: '/bin/sh') {
                             sh """
-                                apk add --no-cache curl jq gnupg
-                                curl -Lo /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux
-                                chmod +x /usr/local/bin/sops
-                                gcloud components install gke-gcloud-auth-plugin
                                 /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
                             """
                             }
