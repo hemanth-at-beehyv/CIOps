@@ -72,22 +72,22 @@ spec:
                     fi
     
                     echo "Deploying below services:"
-                    IFS=',' read -ra IMAGE_LIST <<< "${env.IMAGES}"
-                    for entry in "\${IMAGE_LIST[@]}"; do
-                      if [ "\$entry" = "ALL" ]; then
+                    echo "${env.IMAGES}" | tr ',' '\n' | while read -r entry; do
+                      if [ "$entry" = "ALL" ]; then
                         continue
                       fi
-    
-                      if [[ "\$entry" == *:* ]]; then
-                        svc=\${entry%%:*}
-                        tag=\${entry##*:}
-                        echo "service: \$svc --> image: \$svc:\$tag"
-                        CMD="\$CMD --selector target=./\$svc --set \$svc.image.tag=\$tag"
+                    
+                      if echo "$entry" | grep -q ':'; then
+                        svc=$(echo "$entry" | cut -d: -f1)
+                        tag=$(echo "$entry" | cut -d: -f2)
+                        echo "service: $svc --> image: $svc:$tag"
+                        CMD="$CMD --selector target=./$svc --set $svc.image.tag=$tag"
                       else
-                        echo "service: \$entry"
-                        CMD="\$CMD --selector target=./\$entry"
+                        echo "service: $entry"
+                        CMD="$CMD --selector target=./$entry"
                       fi
                     done
+
     
                     CMD="\$CMD apply"
                     echo "Executing: \$CMD"
