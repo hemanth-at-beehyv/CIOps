@@ -72,19 +72,19 @@ spec:
                     fi
     
                     echo "Deploying below services:"
-                    echo "${env.IMAGES}" | tr ',' '\n' | while read -r entry; do
-                      if [ "$entry" = "ALL" ]; then
+                    echo "${env.IMAGES}" | tr ',' '\\n' | while read -r entry; do
+                      if [ "\$entry" = "ALL" ]; then
                         continue
                       fi
                     
-                      if echo "$entry" | grep -q ':'; then
-                        svc=$(echo "$entry" | cut -d: -f1)
-                        tag=$(echo "$entry" | cut -d: -f2)
-                        echo "service: $svc --> image: $svc:$tag"
-                        CMD="$CMD --selector target=./$svc --set $svc.image.tag=$tag"
+                      if echo "\$entry" | grep -q ':'; then
+                        svc=\$(echo "\$entry" | cut -d: -f1)
+                        tag=\$(echo "\$entry" | cut -d: -f2)
+                        echo "service: \$svc --> image: \$svc:\$tag"
+                        CMD="\$CMD --selector target=./\$svc --set \$svc.image.tag=\$tag"
                       else
-                        echo "service: $entry"
-                        CMD="$CMD --selector target=./$entry"
+                        echo "service: \$entry"
+                        CMD="\$CMD --selector target=./\$entry"
                       fi
                     done
 
