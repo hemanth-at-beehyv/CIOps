@@ -93,23 +93,27 @@ spec:
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
 
-                        IFS=','; echo "\${env.IMAGES}" | while read -ra entries; do
-                          for entry in "\${entries[@]}"; do
-                            if [ "\$entry" = "ALL" ]; then
-                              continue
-                            fi
+                        IMAGES_LIST="${env.IMAGES}"
+                        OLD_IFS="\$IFS"
+                        IFS=','
 
-                            if echo "\$entry" | grep -q ':'; then
-                              svc=\$(echo "\$entry" | cut -d: -f1)
-                              tag=\$(echo "\$entry" | cut -d: -f2)
-                              echo "service: \$svc --> image: \$svc:\$tag"
-                              SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$svc --set \$svc.image.tag=\$tag"
-                            else
-                              echo "service: \$entry"
-                              SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$entry"
-                            fi
-                          done
+                        for entry in \$IMAGES_LIST; do
+                          if [ "\$entry" = "ALL" ]; then
+                            continue
+                          fi
+
+                          if echo "\$entry" | grep -q ':'; then
+                            svc=\$(echo "\$entry" | cut -d: -f1)
+                            tag=\$(echo "\$entry" | cut -d: -f2)
+                            echo "service: \$svc --> image: \$svc:\$tag"
+                            SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$svc --set \$svc.image.tag=\$tag"
+                          else
+                            echo "service: \$entry"
+                            SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$entry"
+                          fi
                         done
+
+                        IFS="\$OLD_IFS"
 
                         CMD="\$CMD \$SERVICE_ARGS template"
                         echo "Executing: \$CMD"
