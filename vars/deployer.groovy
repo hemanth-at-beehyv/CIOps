@@ -50,8 +50,6 @@ spec:
                     detect_cloud_provider() {
                       if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
                         echo "gcp"
-                        export GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/service-account.json
-                        gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
                       elif curl -s -H "Accept: application/json" http://169.254.169.254/latest/dynamic/instance-identity/document >/dev/null 2>&1; then
                         echo "aws"
                       elif curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2021-02-01" >/dev/null 2>&1; then
@@ -60,6 +58,10 @@ spec:
                         echo "unknown"
                       fi
                     }
+                    CLOUD_PROVIDER=\$(detect_cloud_provider)
+                    if [ "$CLOUD_PROVIDER" = "gcp" ] && [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+                      gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+                    fi
                     gcloud config list
                     if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
                       echo "Legacy deploy mode enabled. Running legacy (go) deploy command"
