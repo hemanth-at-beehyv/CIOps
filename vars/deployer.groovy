@@ -58,53 +58,56 @@ spec:
                             echo "unknown"
                           fi
                         }
+
                         CLOUD_PROVIDER=\$(detect_cloud_provider)
                         if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
                           gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
+                          gcloud config list
                         fi
-                        gcloud config list
+
                         if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
                           echo "Legacy deploy mode enabled. Running legacy (go) deploy command"
                           /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
                           exit \$?
                         fi
-        
+
                         if [ -z "${env.IMAGES}" ]; then
                           echo "No services selected to deploy. Exiting."
                           exit 1
                         fi
-        
+
                         CMD="helmfile -f ${pipelineParams.helmDir}/digit-helmfile.yaml -e ${pipelineParams.environment}"
-        
+
                         if [ "${env.CLUSTER_CONFIGS}" = "true" ]; then
                           CMD="\$CMD --selector target=./configmaps"
                         fi
-        
+
                         if [ "${env.IMAGES}" = "ALL" ]; then
                           CMD="\$CMD template"
                           echo "Deploying all services via: \$CMD"
                           eval "\$CMD"
                           exit \$?
                         fi
-        
+
                         echo "Deploying below services:"
+                        SERVICE_ARGS=""
                         echo "${env.IMAGES}" | tr ',' '\\n' | while read -r entry; do
                           if [ "\$entry" = "ALL" ]; then
                             continue
                           fi
-                        
+
                           if echo "\$entry" | grep -q ':'; then
                             svc=\$(echo "\$entry" | cut -d: -f1)
                             tag=\$(echo "\$entry" | cut -d: -f2)
                             echo "service: \$svc --> image: \$svc:\$tag"
-                            CMD="\$CMD --selector target=./\$svc --set \$svc.image.tag=\$tag"
+                            SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$svc --set \$svc.image.tag=\$tag"
                           else
                             echo "service: \$entry"
-                            CMD="\$CMD --selector target=./\$entry"
+                            SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$entry"
                           fi
                         done
-        
-                        CMD="\$CMD template"
+
+                        CMD="\$CMD \$SERVICE_ARGS template"
                         echo "Executing: \$CMD"
                         eval "\$CMD"
                 """
