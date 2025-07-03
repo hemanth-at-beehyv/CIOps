@@ -47,7 +47,6 @@ spec:
             stage('Deploy Images') {
                 container(name: 'egov-deployer', shell: '/bin/bash') {
                     sh """
-                        echo \$0
                         detect_cloud_provider() {
                           if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
                             echo "gcp"
@@ -60,6 +59,7 @@ spec:
                           fi
                         }
 
+                        echo \$0
                         CLOUD_PROVIDER=\$(detect_cloud_provider)
                         if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
                           gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
@@ -93,7 +93,7 @@ spec:
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
                         
-                        IFS=',' read -ra entries <<< "${env.IMAGES}"
+                        IFS=','; echo "${env.IMAGES}" | while read -ra entries; do
                         for entry in "\${entries[@]}"; do
                           if [ "\$entry" = "ALL" ]; then
                             continue
