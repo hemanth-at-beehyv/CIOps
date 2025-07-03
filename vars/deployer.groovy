@@ -59,8 +59,8 @@ spec:
                           fi
                         }
                         CLOUD_PROVIDER=\$(detect_cloud_provider)
-                        if [ "$CLOUD_PROVIDER" = "gcp" ] && [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-                          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+                        if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+                          gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
                         fi
                         gcloud config list
                         if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
