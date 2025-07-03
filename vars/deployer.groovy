@@ -47,6 +47,7 @@ spec:
             stage('Deploy Images') {
                 container(name: 'egov-deployer', shell: '/bin/bash') {
                     sh """
+                        echo \$0
                         detect_cloud_provider() {
                           if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
                             echo "gcp"
