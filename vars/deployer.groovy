@@ -47,6 +47,7 @@ spec:
             stage('Deploy Images') {
                 container(name: 'egov-deployer', shell: '/bin/bash') {
                     sh """
+                        set +x
                         detect_cloud_provider() {
                           if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
                             echo "gcp"
@@ -59,16 +60,18 @@ spec:
                           fi
                         }
 
-                        echo \$0
                         CLOUD_PROVIDER=\$(detect_cloud_provider)
                         if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
                           gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
                           gcloud config list
                         fi
 
+                        echo ""
                         if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
                           echo "Legacy deploy mode enabled. Running legacy (go) deploy command"
-                          /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
+                          CMD="/opt/egov/egov-deployer deploy --helm-dir \$(pwd)/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS} -e ${pipelineParams.environment} \"${env.IMAGES}\" -p"
+                          echo "Executing: \$CMD"
+                          eval "\$CMD"
                           exit \$?
                         fi
 
@@ -79,11 +82,11 @@ spec:
 
                         CMD="helmfile -f ${pipelineParams.helmDir}/digit-helmfile.yaml -e ${pipelineParams.environment}"
 
-                        set +x
                         if [ "${env.CLUSTER_CONFIGS}" = "true" ]; then
                           CMD="\$CMD --selector target=./configmaps"
                         fi
 
+                        echo ""
                         if [ "${env.IMAGES}" = "ALL" ]; then
                           CMD="\$CMD template"
                           echo "Deploying all services via: \$CMD"
@@ -91,6 +94,7 @@ spec:
                           exit \$?
                         fi
 
+                        echo ""
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
 
@@ -116,6 +120,7 @@ spec:
 
                         IFS="\$OLD_IFS"
 
+                        echo ""
                         CMD="\$CMD \$SERVICE_ARGS template"
                         echo "Executing: \$CMD"
                         eval "\$CMD"
