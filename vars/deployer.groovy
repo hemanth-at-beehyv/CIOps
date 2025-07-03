@@ -45,7 +45,7 @@ spec:
         node(POD_LABEL) {
             git url: pipelineParams.repo, branch: pipelineParams.branch, credentialsId: 'git_read'
             stage('Deploy Images') {
-                container(name: 'egov-deployer', shell: '/bin/sh') {
+                container(name: 'egov-deployer', shell: '/bin/bash') {
                     sh """
                         detect_cloud_provider() {
                           if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
@@ -91,7 +91,7 @@ spec:
 
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
-                        IFS=','; for entry in ${env.IMAGES}; do
+                        IFS=',' read -ra entries <<< "$IMAGES"
                           if [ "\$entry" = "ALL" ]; then
                             continue
                           fi
