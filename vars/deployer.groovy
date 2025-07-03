@@ -61,6 +61,7 @@ spec:
                         CLOUD_PROVIDER=\$(detect_cloud_provider)
                         if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
                           cat /var/run/secret/cloud.google.com/service-account.json
+                          jq . /var/run/secret/cloud.google.com/service-account.json
                           gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
                         fi
                         gcloud config list
