@@ -91,7 +91,7 @@ spec:
 
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
-                        echo "${env.IMAGES}" | tr ',' '\\n' | while read -r entry; do
+                        IFS=','; for entry in ${env.IMAGES}; do
                           if [ "\$entry" = "ALL" ]; then
                             continue
                           fi
