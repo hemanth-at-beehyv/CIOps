@@ -79,6 +79,7 @@ spec:
 
                         CMD="helmfile -f ${pipelineParams.helmDir}/digit-helmfile.yaml -e ${pipelineParams.environment}"
 
+                        set +x
                         if [ "${env.CLUSTER_CONFIGS}" = "true" ]; then
                           CMD="\$CMD --selector target=./configmaps"
                         fi
