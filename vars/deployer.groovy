@@ -91,7 +91,9 @@ spec:
 
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
-                        IFS=',' read -ra entries <<< "$IMAGES"
+                        
+                        IFS=',' read -ra entries <<< "${env.IMAGES}"
+                        for entry in "\${entries[@]}"; do
                           if [ "\$entry" = "ALL" ]; then
                             continue
                           fi
