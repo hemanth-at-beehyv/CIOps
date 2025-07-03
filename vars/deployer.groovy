@@ -92,23 +92,23 @@ spec:
 
                         echo "Deploying below services:"
                         SERVICE_ARGS=""
-                        
-                        IFS=','; echo "${env.IMAGES}" | while read -ra entries; do
-                            for entry in "\${entries[@]}"; do
-                              if [ "\$entry" = "ALL" ]; then
-                                continue
-                              fi
-    
-                              if echo "\$entry" | grep -q ':'; then
-                                svc=\$(echo "\$entry" | cut -d: -f1)
-                                tag=\$(echo "\$entry" | cut -d: -f2)
-                                echo "service: \$svc --> image: \$svc:\$tag"
-                                SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$svc --set \$svc.image.tag=\$tag"
-                              else
-                                echo "service: \$entry"
-                                SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$entry"
-                              fi
-                            done
+
+                        IFS=','; echo "\${env.IMAGES}" | while read -ra entries; do
+                          for entry in "\${entries[@]}"; do
+                            if [ "\$entry" = "ALL" ]; then
+                              continue
+                            fi
+
+                            if echo "\$entry" | grep -q ':'; then
+                              svc=\$(echo "\$entry" | cut -d: -f1)
+                              tag=\$(echo "\$entry" | cut -d: -f2)
+                              echo "service: \$svc --> image: \$svc:\$tag"
+                              SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$svc --set \$svc.image.tag=\$tag"
+                            else
+                              echo "service: \$entry"
+                              SERVICE_ARGS="\$SERVICE_ARGS --selector target=./\$entry"
+                            fi
+                          done
                         done
 
                         CMD="\$CMD \$SERVICE_ARGS template"
