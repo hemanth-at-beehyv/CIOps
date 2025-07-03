@@ -47,6 +47,7 @@ spec:
             stage('Deploy Images') {
                 container(name: 'egov-deployer', shell: '/bin/sh') {
                     sh """
+                    gcloud config list
                     if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
                       echo "Legacy deploy mode enabled. Running legacy (go) deploy command"
                       /opt/egov/egov-deployer deploy --helm-dir `pwd`/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS}  -e ${pipelineParams.environment} "${env.IMAGES}"
