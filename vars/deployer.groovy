@@ -65,7 +65,7 @@ spec:
                     fi
     
                     if [ "${env.IMAGES}" = "ALL" ]; then
-                      CMD="\$CMD apply"
+                      CMD="\$CMD template"
                       echo "Deploying all services via: \$CMD"
                       eval "\$CMD"
                       exit \$?
@@ -87,9 +87,8 @@ spec:
                         CMD="\$CMD --selector target=./\$entry"
                       fi
                     done
-
     
-                    CMD="\$CMD apply"
+                    CMD="\$CMD template"
                     echo "Executing: \$CMD"
                     eval "\$CMD"
                 """
