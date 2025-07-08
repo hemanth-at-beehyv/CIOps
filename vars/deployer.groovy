@@ -48,28 +48,25 @@ spec:
                 container(name: 'egov-deployer', shell: '/bin/bash') {
                     sh """
                         set +x
-                        detect_cloud_provider() {
-                          if curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id >/dev/null 2>&1; then
-                            echo "gcp"
-                          elif curl -s -H "Accept: application/json" http://169.254.169.254/latest/dynamic/instance-identity/document >/dev/null 2>&1; then
-                            echo "aws"
-                          elif curl -s -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2021-02-01" >/dev/null 2>&1; then
-                            echo "azure"
+                        server_url=\$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')
+                        server_ip=\$(echo "\$server_url" | sed 's|https://||' | cut -d: -f1)
+                        
+                        if host "\$server_ip" | grep -q "googleusercontent.com"; then
+                          echo "GKE cluster detected via reverse DNS (\$server_ip)"
+                          if [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+                            gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
+                            gcloud config list
                           else
-                            echo "unknown"
+                            echo "GOOGLE_APPLICATION_CREDENTIALS not set or file missing"
                           fi
-                        }
-
-                        CLOUD_PROVIDER=\$(detect_cloud_provider)
-                        if [ "\$CLOUD_PROVIDER" = "gcp" ] && [ -f "\$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-                          gcloud auth activate-service-account --key-file="\$GOOGLE_APPLICATION_CREDENTIALS"
-                          gcloud config list
+                        else
+                          echo "Non-GKE cluster detected. Skipping gcloud auth."
                         fi
 
                         echo ""
                         if [ "${env.LEGACY_DEPLOYER}" = "true" ]; then
                           echo "Legacy deploy mode enabled. Running legacy (go) deploy command"
-                          CMD="/opt/egov/egov-deployer deploy --helm-dir \$(pwd)/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS} -e ${pipelineParams.environment} \"${env.IMAGES}\" -p"
+                          CMD="/opt/egov/egov-deployer deploy --helm-dir \$(pwd)/${pipelineParams.helmDir} -c=${env.CLUSTER_CONFIGS} -e ${pipelineParams.environment} \"${env.IMAGES}\""
                           echo "Executing: \$CMD"
                           eval "\$CMD"
                           exit \$?
