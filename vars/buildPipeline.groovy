@@ -55,8 +55,6 @@ spec:
     volumeMounts:
       - name: jenkins-docker-cfg
         mountPath: /root/.docker
-      - name: kaniko-cache
-        mountPath: /cache  
       - name: service-account
         mountPath: /var/run/secret/cloud.google.com        
     resources:
@@ -72,11 +70,7 @@ spec:
     command:
     - cat
     tty: true        
-  volumes:
-  - name: kaniko-cache
-    persistentVolumeClaim:
-      claimName: kaniko-cache-claim
-      readOnly: true      
+  volumes: 
   - name: service-account
     projected:
       sources:
