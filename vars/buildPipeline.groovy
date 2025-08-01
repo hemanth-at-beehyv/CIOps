@@ -164,7 +164,7 @@ spec:
                                 else{
                                 sh """
                                     echo \"Attempting to build image,  ${image}\"
-                                    /kaniko/executor -f `pwd`/${buildConfig.getDockerFile()} -c `pwd`/${buildConfig.getContext()} \
+                                    /kaniko/executor -f `pwd`/${buildConfig.getDockerFile()} -c `pwd`/${buildConfig.getContext()} --force \
                                     --build-arg WORK_DIR=${workDir} \
                                     --build-arg token=\$GIT_ACCESS_TOKEN \
                                     --build-arg nexusUsername=\$NEXUS_USERNAME \
